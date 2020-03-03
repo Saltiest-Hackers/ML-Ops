@@ -11,9 +11,14 @@ def create_app():
      # connect to the PostgreSQL server
     conn = psycopg2.connect("postgres://" + config("POSTGRES_USERNAME") + ":" + config("POSTGRES_PASSWORD") + "@raja.db.elephantsql.com:5432/mozfsrjp")
 
-        
     @app.route('/')
     def hello():
+        """Homepage, returns a string"""
+        return "Hello world"
+
+
+    @app.route('/topcomments')
+    def topcomments():
         """Returns 100 most salty comments"""
         cur=conn.cursor()
         cur.execute("(SELECT ROW_TO_JSON(c) FROM (SELECT * FROM comments ORDER BY saltiness DESC LIMIT 100) c)")
@@ -27,12 +32,9 @@ def create_app():
 
     # app.route('/topx')
     # def topx():
-    #     conn = psycopg2.connect("postgres://" + config("POSTGRES_USERNAME") + ":" + config("POSTGRES_PASSWORD") + "@raja.db.elephantsql.com:5432/mozfsrjp")
-    #     message="Hello"
     #     cur=conn.cursor()
-    #     x=100
-    #     cur.execute("(SELECT ROW_TO_JSON(c) FROM (SELECT * FROM comments LIMIT 10) c)")
+    #     cur.execute("SELECT DISTINCT ")
     #     cur.fetchall()
-    #     return message
+    #     return "Hello"
 
     return app
