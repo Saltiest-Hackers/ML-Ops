@@ -8,6 +8,7 @@ from decouple import config
 def create_app():
     
     app=Flask(__name__)
+
      # connect to the PostgreSQL server
     conn = psycopg2.connect("postgres://" + config("POSTGRES_USERNAME") + ":" + config("POSTGRES_PASSWORD") + "@raja.db.elephantsql.com:5432/mozfsrjp")
 
@@ -29,12 +30,26 @@ def create_app():
         
         return json.dumps(final) 
 
+    query='''SELECT ROW_TO_JSON(t) FROM (SELECT author, 
+    COUNT(*) as n_comments, 
+    AVG(saltiness) as avg_salt 
+    FROM comments 
+    GROUP BY author) AS t
+    WHERE t.n_comments>50 
+    ORDER BY t.avg_salt DESC
+    LIMIT 100
+    '''
 
-    # app.route('/topx')
-    # def topx():
-    #     cur=conn.cursor()
-    #     cur.execute("SELECT DISTINCT ")
-    #     cur.fetchall()
-    #     return "Hello"
+    @app.route('/topusers')
+    def topusers():
+        """Returns top 100 saltiest users (using AVG(saltiness)) of their comments
+        Limited to users with 50+ comments overall"""
+        cur=conn.cursor()
+        cur.execute(query)
+        result=cur.fetchall()
+        final=[]
+        for i in range(len(result)):
+            final.append(result[i][0])
+        return json.dumps(final)
 
     return app
