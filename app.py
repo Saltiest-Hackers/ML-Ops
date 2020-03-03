@@ -20,7 +20,7 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 # db = SQLAlchemy()
 
-@app.route('/<username>')
+@app.route('/user/<username>')
 def username(username=None):
     '''
     returns json output of saltiness score for given username
@@ -42,4 +42,5 @@ def username(username=None):
     json_data = []
     for result in results:
         json_data.append(dict(zip(headers, result)))
+
     return jsonify(json_data)
