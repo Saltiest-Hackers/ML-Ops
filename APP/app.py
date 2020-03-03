@@ -1,10 +1,12 @@
-from flask import Flask, jsonify
 from psycopg2 import connect
-# from flask_sqlalchemy import SQLAlchemy 
+from decouple import config
+from flask import Flask, jsonify, render_template, json
+import psycopg2
+from flask_sqlalchemy import SQLAlchemy 
 from decouple import config
 
-# Is there an advantage for doing nested functions like this? will we need this
-# later?
+
+
 def create_app():
     
     app=Flask(__name__)
