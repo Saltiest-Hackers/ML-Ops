@@ -1,24 +1,23 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask import jsonify, render_template, redirect, request
-
-from os import getenv
 from dotenv import load_dotenv
-import psycopg2
+from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from os import getenv
+from psycopg2 import connect
 
 load_dotenv()
-
-DB_NAME = getenv("DB_NAME")
-DB_USER = getenv("DB_USER")
-DB_PASSWORD = getenv("DB_PASSWORD")
-DB_HOST = getenv("DB_HOST")
-DB_URL = f'postgres://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}'
 
 app = Flask(__name__)
 
 # STILL TRYING TO FIGURE OUT HOW SQLALCHEMY WORKS
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 # db = SQLAlchemy()
+
+DB_NAME = getenv("DB_NAME")
+DB_USER = getenv("DB_USER")
+DB_PASSWORD = getenv("DB_PASSWORD")
+DB_HOST = getenv("DB_HOST")
+DB_URL = f'postgres://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}'
+conn = connect(DB_URL)
 
 @app.route('/user/<username>')
 def username(username=None):
@@ -34,7 +33,6 @@ def username(username=None):
     LIMIT 100
     '''
 
-    conn = psycopg2.connect(DB_URL)
     curs = conn.cursor()
     curs.execute(query)
     headers = ['c_id', 'u_id', 'timestamp', 'comment_text', 'p_id', 'saltiness']
