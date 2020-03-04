@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 from decouple import config
 
 
-
 def create_app():
     
     app=Flask(__name__)
@@ -27,11 +26,15 @@ def create_app():
 
     @app.route('/topcomments')
     def topcomments():
-        '''Returns 100 most salty comments'''
+        '''
+        Returns 100 most salty comments
+        '''
 
         query = '''
-        SELECT ROW_TO_JSON(c) 
-        FROM (SELECT * FROM comments ORDER BY saltiness DESC LIMIT 100) c
+        SELECT *
+        FROM comments
+        ORDER BY saltiness DESC
+        LIMIT 100
         '''
         cur = conn.cursor()
         cur.execute(query)
