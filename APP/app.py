@@ -3,7 +3,6 @@ from decouple import config
 from flask import Flask, jsonify, render_template, json
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy 
-from decouple import config
 
 
 def create_app():
@@ -19,7 +18,6 @@ def create_app():
 
     @app.route('/')
     def hello():
-        '''Homepage, returns a string'''
 
         return 'Hello world'
 
@@ -38,12 +36,13 @@ def create_app():
         '''
         cur = conn.cursor()
         cur.execute(query)
-        result_set=cur.fetchall()
-        final=[]
-        for i in range(len(result_set)):
-            final.append(result_set[i][0])
+        results = cur.fetchall()
+        headers = [x[0] for x in curs.description]
+        json_data = []
+        for result in results:
+            json_data.append(dict(zip(headers, result)))
         
-        return jsonify(final)
+        return jsonify(json_data)
 
 
 
