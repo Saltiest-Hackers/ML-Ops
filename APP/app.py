@@ -114,14 +114,14 @@ def create_app():
 
         try:
             query = f'''
-            SELECT id, comment_text
+            SELECT *
             FROM comments
             WHERE id = '{comment_id}'
             '''
-            curs = conn.cursor()
-            curs.execute(query)
-            headers = [x[0] for x in curs.description]
-            result = curs.fetchone()
+            cur = conn.cursor()
+            cur.execute(query)
+            headers = [x[0] for x in cur.description]
+            result = cur.fetchone()
             
             return jsonify(dict(zip(headers, result)))
 
