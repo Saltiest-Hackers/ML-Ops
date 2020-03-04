@@ -83,23 +83,27 @@ def create_app():
         '''
         returns json output of saltiness score for given username
         '''
+        try:
+            query = f'''
+            SELECT *
+            FROM comments
+            WHERE author = '{username}'
+            ORDER BY saltiness DESC
+            LIMIT 100
+            '''
+            cur = conn.cursor()
+            cur.execute(query)
+            headers = [x[0] for x in cur.description]
+            results = cur.fetchall()
+            json_data = []
+            for result in results:
+                json_data.append(dict(zip(headers, result)))
 
-        query = f'''
-        SELECT *
-        FROM comments
-        WHERE author = '{username}'
-        ORDER BY saltiness DESC
-        LIMIT 100
-        '''
-        cur = conn.cursor()
-        cur.execute(query)
-        headers = [x[0] for x in cur.description]
-        results = cur.fetchall()
-        json_data = []
-        for result in results:
-            json_data.append(dict(zip(headers, result)))
+            return jsonify(json_data)
+        
+        except:
+            return jsonify({'message': 'User Not Found'})
 
-        return jsonify(json_data)
 
 
     @app.route('/comment/<comment_id>')
