@@ -1,7 +1,7 @@
 from psycopg2 import connect
 from decouple import config
 from flask import Flask, jsonify, render_template, json
-import psycopg2
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy 
 from decouple import config
 
@@ -10,6 +10,7 @@ from decouple import config
 def create_app():
     
     app=Flask(__name__)
+    CORS(app)
 
     DB_USER = config('POSTGRES_USERNAME')
     DB_PASS = config('POSTGRES_PASSWORD')
@@ -90,5 +91,28 @@ def create_app():
             json_data.append(dict(zip(headers, result)))
 
         return jsonify(json_data)
+
+
+    @app.route('/comment/<comment_id>')
+    def comment(comment_id=None):
+        '''
+        returns json of comment text, given comment id
+        '''
+
+        try:
+            query = f'''
+            SELECT id, comment_text
+            FROM comments
+            WHERE id = '{comment_id}'
+            '''
+            curs = conn.cursor()
+            curs.execute(query)
+            headers = [x[0] for x in curs.description]
+            result = curs.fetchone()
+            
+            return jsonify(dict(zip(headers, result)))
+
+        except:
+            return jsonify({'message': 'Comment ID Not Found'})
 
     return app
