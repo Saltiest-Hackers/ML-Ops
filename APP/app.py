@@ -48,27 +48,34 @@ def create_app():
 
     @app.route('/topusers')
     def topusers():
-        '''Returns top 100 saltiest users (using AVG(saltiness)) of their comments
-        Limited to users with 50+ comments overall'''
+        '''
+        Returns top 100 saltiest users (using AVG(saltiness)) of their comments
+        Limited to users with 50+ comments overall
+        '''
         
         query = '''
-        SELECT ROW_TO_JSON(t) FROM (SELECT author, 
-        COUNT(*) as n_comments, 
-        AVG(saltiness) as avg_salt 
-        FROM comments 
-        GROUP BY author) AS t
-        WHERE t.n_comments>50 
+        SELECT *
+        FROM (
+            SELECT
+                author, 
+                COUNT(author) AS n_comments,
+                AVG(saltiness) AS avg_salt
+            FROM comments
+            GROUP BY author
+            ) t
+        WHERE t.n_comments > 50
         ORDER BY t.avg_salt DESC
         LIMIT 100
         '''
-        cur=conn.cursor()
+        cur = conn.cursor()
         cur.execute(query)
-        result=cur.fetchall()
-        final=[]
-        for i in range(len(result)):
-            final.append(result[i][0])
+        results = cur.fetchall()
+        headers = [x[0] for x in cur.description]
+        json_data = []
+        for result in results:
+            json_data.append(dict(zip(headers, result)))
         
-        return jsonify(final)
+        return jsonify(json_data)
 
 
     @app.route('/user/<username>')
@@ -84,10 +91,10 @@ def create_app():
         ORDER BY saltiness DESC
         LIMIT 100
         '''
-        curs = conn.cursor()
-        curs.execute(query)
-        headers = [x[0] for x in curs.description]
-        results = curs.fetchall()
+        cur = conn.cursor()
+        cur.execute(query)
+        headers = [x[0] for x in cur.description]
+        results = cur.fetchall()
         json_data = []
         for result in results:
             json_data.append(dict(zip(headers, result)))
