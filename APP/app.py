@@ -37,8 +37,8 @@ def create_app():
             with conn.cursor() as cur:
                 cur.execute(query)
                 results = cur.fetchall()
-
-        headers = [x[0] for x in curs.description]
+                headers = [x[0] for x in cur.description]
+        
         json_data = []
         for result in results:
             json_data.append(dict(zip(headers, result)))
@@ -72,8 +72,8 @@ def create_app():
             with conn.cursor() as cur:
                 cur.execute(query)
                 results = cur.fetchall()
+                headers = [x[0] for x in cur.description]
         
-        headers = [x[0] for x in cur.description]
         json_data = []
         for result in results:
             json_data.append(dict(zip(headers, result)))
