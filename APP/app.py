@@ -33,11 +33,10 @@ def create_app():
         ORDER BY saltiness DESC
         LIMIT 100
         '''
-        conn = connect(DB_URL)
-        cur = conn.cursor()
-        cur.execute(query)
-        results = cur.fetchall()
-        conn.close()
+        with connect(DB_URL) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query)
+                results = cur.fetchall()
 
         headers = [x[0] for x in curs.description]
         json_data = []
@@ -69,11 +68,10 @@ def create_app():
         ORDER BY t.avg_salt DESC
         LIMIT 100
         '''
-        conn = connect(DB_URL)
-        cur = conn.cursor()
-        cur.execute(query)
-        results = cur.fetchall()
-        conn.close()
+        with connect(DB_URL) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query)
+                results = cur.fetchall()
         
         headers = [x[0] for x in cur.description]
         json_data = []
@@ -96,12 +94,11 @@ def create_app():
             ORDER BY saltiness DESC
             LIMIT 100
             '''
-            conn = connect(DB_URL)
-            cur = conn.cursor()
-            cur.execute(query)
-            headers = [x[0] for x in cur.description]
-            results = cur.fetchall()
-            conn.close()
+            with connect(DB_URL) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(query)
+                    headers = [x[0] for x in cur.description]
+                    results = cur.fetchall()
         
             json_data = []
             for result in results:
@@ -126,12 +123,11 @@ def create_app():
             FROM comments
             WHERE id = '{comment_id}'
             '''
-            conn = connect(DB_URL)
-            cur = conn.cursor()
-            cur.execute(query)
-            headers = [x[0] for x in cur.description]
-            result = cur.fetchone()
-            conn.close()
+            with connect(DB_URL) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(query)
+                    headers = [x[0] for x in cur.description]
+                    result = cur.fetchone()
         
             return jsonify(dict(zip(headers, result)))
 
