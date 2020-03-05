@@ -14,7 +14,6 @@ def create_app():
     DB_PASS = config('POSTGRES_PASSWORD')
     DB_HOST = config('POSTGRES_HOST')
     DB_URL = f'postgres://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/{DB_USER}'
-    conn = connect(DB_URL)
 
     @app.route('/')
     def hello():
@@ -34,9 +33,12 @@ def create_app():
         ORDER BY saltiness DESC
         LIMIT 100
         '''
+        conn = connect(DB_URL)
         cur = conn.cursor()
         cur.execute(query)
         results = cur.fetchall()
+        conn.close()
+
         headers = [x[0] for x in curs.description]
         json_data = []
         for result in results:
@@ -67,9 +69,12 @@ def create_app():
         ORDER BY t.avg_salt DESC
         LIMIT 100
         '''
+        conn = connect(DB_URL)
         cur = conn.cursor()
         cur.execute(query)
         results = cur.fetchall()
+        conn.close()
+        
         headers = [x[0] for x in cur.description]
         json_data = []
         for result in results:
@@ -91,10 +96,13 @@ def create_app():
             ORDER BY saltiness DESC
             LIMIT 100
             '''
+            conn = connect(DB_URL)
             cur = conn.cursor()
             cur.execute(query)
             headers = [x[0] for x in cur.description]
             results = cur.fetchall()
+            conn.close()
+        
             json_data = []
             for result in results:
                 json_data.append(dict(zip(headers, result)))
@@ -118,11 +126,13 @@ def create_app():
             FROM comments
             WHERE id = '{comment_id}'
             '''
+            conn = connect(DB_URL)
             cur = conn.cursor()
             cur.execute(query)
             headers = [x[0] for x in cur.description]
             result = cur.fetchone()
-            
+            conn.close()
+        
             return jsonify(dict(zip(headers, result)))
 
         except:
