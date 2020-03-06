@@ -13,6 +13,8 @@ python-decouple = "*"
 psycopg2-binary = "*"
 pandas = "*"
 scikit-learn = "*"
+gunicorn = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"
