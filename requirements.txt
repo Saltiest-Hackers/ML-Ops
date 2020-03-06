@@ -1,0 +1,9 @@
+flask
+flask-cors
+flask-sqlalchemy
+gunicorn
+pandas
+psycopg2-binary
+python-decouple
+requests
+scikit-learn

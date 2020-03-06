@@ -1,8 +1,7 @@
 from psycopg2 import connect
 from decouple import config
-from flask import Flask, jsonify, render_template, json
+from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy 
 
 
 def create_app():

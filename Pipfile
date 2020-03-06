@@ -8,13 +8,13 @@ verify_ssl = true
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
-python-dotenv = "*"
 python-decouple = "*"
 psycopg2-binary = "*"
 pandas = "*"
 scikit-learn = "*"
 gunicorn = "*"
 flask-cors = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
