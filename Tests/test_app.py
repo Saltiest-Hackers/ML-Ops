@@ -1,17 +1,42 @@
-from psycopg2 import connect
-from requests import get
 import json
 import unittest
+from psycopg2 import connect
+from requests import get
 
 
 def request_saltiness(route, route_id=False):
+    '''
+    Requests 'hn-saltiness' endpoints given 'route' and 'route_id' parameters
+    Returns resulting data in json format
+    '''
     BASE_URL = 'https://hn-saltiness.herokuapp.com/'+route
     FINAL_URL = BASE_URL if not route_id else BASE_URL+'/'+route_id
-    print(FINAL_URL)
     request = get(FINAL_URL)
     return json.loads(request.text)
 
 class AppTests(unittest.TestCase):
+
+    def test_users(self):
+        '''
+        Testing /topusers route
+        '''
+        results = request_saltiness('topusers')
+        
+        self.assertEqual(len(results), 100)
+        self.assertEqual(type(results), list)
+        self.assertEqual(type(results[0]), dict) 
+        return
+
+    def test_comments(self):
+        '''
+        Testing /topcomments route
+        '''
+        results = request_saltiness('topcomments')
+
+        self.assertEqual(len(results), 100)
+        self.assertEqual(type(results), list)
+        self.assertEqual(type(results[0]), dict) 
+        return
 
     def test_username(self):
         '''
@@ -37,6 +62,6 @@ class AppTests(unittest.TestCase):
         self.assertEqual(results['id'], int(comment_id))
         self.assertEqual(type(results['id']), int)
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     unittest.main()
-    # request_saltiness(route='user', username='Data_Junkie')
