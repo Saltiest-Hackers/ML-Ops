@@ -15,6 +15,7 @@ pandas = "*"
 scikit-learn = "*"
 gunicorn = "*"
 flask-cors = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
